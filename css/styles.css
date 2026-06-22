@@ -105,7 +105,7 @@ nav:hover { border-bottom-color: rgba(183,205,2,0.25); }
   min-height: 100vh;
   background:
     linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.7) 60%, var(--negro) 100%),
-    url('../assets/imag1.png') center / cover no-repeat;
+    url('../assets/homefoto.png.png') center / cover no-repeat;
   display: flex;
   align-items: center;
   padding: 120px 5% 80px;
