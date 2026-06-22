@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería de Assets — Luthier</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #f5f5f0;
+      font-family: 'Courier New', monospace;
+      padding: 40px 5%;
+    }
+
+    h1 {
+      font-size: 28px;
+      letter-spacing: 0.15em;
+      color: #b7cd02;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: rgba(245,245,240,0.4);
+      margin-bottom: 48px;
+      letter-spacing: 0.1em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid rgba(183,205,2,0.15);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: rgba(183,205,2,0.5); }
+
+    .img-wrap {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 100%;
+      color: rgba(245,245,240,0.2);
+    }
+    .placeholder svg { width: 40px; height: 40px; opacity: 0.3; }
+    .placeholder span { font-size: 11px; letter-spacing: 0.1em; }
+
+    .card-info {
+      padding: 14px 16px;
+      border-top: 1px solid rgba(183,205,2,0.1);
+    }
+    .filename {
+      font-size: 13px;
+      color: #b7cd02;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    .desc {
+      font-size: 11px;
+      color: rgba(245,245,240,0.5);
+      line-height: 1.5;
+    }
+    .status {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+    }
+    .status.ok      { background: rgba(183,205,2,0.2); color: #b7cd02; }
+    .status.missing { background: rgba(255,80,80,0.15); color: rgba(255,120,120,0.8); }
+
+    .video-card .img-wrap { aspect-ratio: 16/9; }
+    .video-wrap {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #111;
+    }
+    video { width: 100%; height: 100%; object-fit: cover; }
+
+    .legend {
+      margin-top: 48px;
+      border-top: 1px solid rgba(183,205,2,0.1);
+      padding-top: 24px;
+      font-size: 12px;
+      color: rgba(245,245,240,0.35);
+      line-height: 1.8;
+    }
+    .legend strong { color: #b7cd02; }
+  </style>
+</head>
+<body>
+
+<h1>Galería de Assets</h1>
+<p class="subtitle">Revisá y tocá cada imagen antes de publicar · galeria.html</p>
+
+<div class="grid" id="gallery"></div>
+
+<div class="legend">
+  <strong>Cómo usar:</strong> Copiá tus fotos en esta misma carpeta <code>assets/</code> con los nombres exactos que ves arriba.<br>
+  Recargá esta página para ver si cargaron correctamente.<br>
+  <strong>Formatos aceptados:</strong> .png · .jpg · .jpeg · .webp &nbsp;|&nbsp;
+  <strong>Video:</strong> video.mp4 (H.264, máx 50MB recomendado)
+</div>
+
+<script>
+  const assets = [
+    { file: 'imag1.png',  label: 'Hero — fondo principal',               seccion: 'Hero',          ratio: '16/9' },
+    { file: 'imag2.png',  label: 'Quienes Somos — foto izquierda',        seccion: 'Quienes Somos', ratio: '3/4'  },
+    { file: 'imag3.png',  label: 'Quienes Somos — foto derecha',          seccion: 'Quienes Somos', ratio: '3/4'  },
+    { file: 'imag4.png',  label: 'Servicios — guitarra (PNG transparente ideal)', seccion: 'Servicios', ratio: '3/4' },
+    { file: 'imag5.png',  label: 'Video — fondo de sección',              seccion: 'Video',         ratio: '16/9' },
+    { file: 'imag6.png',  label: 'Resultados — guitarra ANTES',           seccion: 'Resultados',    ratio: '16/9' },
+    { file: 'imag7.png',  label: 'Resultados — guitarra DESPUÉS',         seccion: 'Resultados',    ratio: '16/9' },
+    { file: 'imag8.png',  label: 'Personaliza — fondo del banner',        seccion: 'Personaliza',   ratio: '16/9' },
+    { file: 'imag9.png',  label: 'Personaliza — foto central etiquetas',  seccion: 'Personaliza',   ratio: '2/3'  },
+    { file: 'imag10.png', label: 'Materiales — madera Fresno',            seccion: 'Materiales',    ratio: '2/3'  },
+    { file: 'imag11.png', label: 'Materiales — madera Álamo',             seccion: 'Materiales',    ratio: '2/3'  },
+    { file: 'imag12.png', label: 'Materiales — madera Arce',              seccion: 'Materiales',    ratio: '2/3'  },
+    { file: 'imag13.png', label: 'Materiales — madera Caoba',             seccion: 'Materiales',    ratio: '2/3'  },
+  ];
+
+  const grid = document.getElementById('gallery');
+
+  assets.forEach(asset => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'img-wrap';
+    wrap.style.aspectRatio = asset.ratio;
+
+    const img = new Image();
+    img.src = asset.file;
+
+    img.onload = () => {
+      wrap.innerHTML = '';
+      wrap.appendChild(img);
+      card.querySelector('.status').textContent = '✓ Cargada';
+      card.querySelector('.status').className   = 'status ok';
+    };
+    img.onerror = () => {
+      wrap.innerHTML = `
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>${asset.file}</span>
+        </div>`;
+      card.querySelector('.status').textContent = '✗ Falta la imagen';
+      card.querySelector('.status').className   = 'status missing';
+    };
+
+    wrap.appendChild(img);
+
+    card.innerHTML = `
+      <div class="card-info">
+        <div class="filename">${asset.file}</div>
+        <div class="desc">${asset.label}</div>
+        <div class="desc" style="color:rgba(183,205,2,0.4); margin-top:2px;">Sección: ${asset.seccion}</div>
+        <span class="status missing">Verificando...</span>
+      </div>`;
+
+    card.insertBefore(wrap, card.firstChild);
+    grid.appendChild(card);
+  });
+
+  /* ── Video card ── */
+  const vcard = document.createElement('div');
+  vcard.className = 'card video-card';
+  vcard.innerHTML = `
+    <div class="img-wrap" style="aspect-ratio:16/9;" id="videoWrap">
+      <div class="placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        <span>video.mp4</span>
+      </div>
+    </div>
+    <div class="card-info">
+      <div class="filename">video.mp4</div>
+      <div class="desc">Sección Video / JAM FRIDAY</div>
+      <div class="desc" style="color:rgba(183,205,2,0.4); margin-top:2px;">Sección: Video</div>
+      <span class="status missing" id="videoStatus">Verificando...</span>
+    </div>`;
+  grid.appendChild(vcard);
+
+  const vid = document.createElement('video');
+  vid.src      = 'video.mp4';
+  vid.controls = true;
+  vid.muted    = true;
+  vid.style    = 'width:100%;height:100%;object-fit:cover;';
+  vid.oncanplay = () => {
+    document.getElementById('videoWrap').innerHTML = '';
+    document.getElementById('videoWrap').appendChild(vid);
+    document.getElementById('videoStatus').textContent = '✓ Cargado';
+    document.getElementById('videoStatus').className   = 'status ok';
+  };
+  vid.onerror = () => {
+    document.getElementById('videoStatus').textContent = '✗ Falta video.mp4';
+    document.getElementById('videoStatus').className   = 'status missing';
+  };
+  vid.load();
+</script>
+</body>
+</html>
